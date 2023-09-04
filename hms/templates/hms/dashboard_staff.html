@@ -1,0 +1,49 @@
+{% extends 'hms/main.html' %}
+{% load static %}
+{% block title %} Dashboard Stuff {% endblock title %}
+
+
+{% block body %}
+<h1>Dashboard {{group}}</h1>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'hms/img/patient-avatar.png' %}" class="card-img-top" alt="Patient Avatar">
+                <div class="card-body">
+                    <h5 class="card-title">Patient Name : {{patient.name}}</h5>
+                    <p class="card-text">Age: 30</p>
+                    <p class="card-text">Gender: {{patient.gender}}</p>
+                    <p class="card-text">Email: {{patient.email}}</p>
+                    <p class="card-text">Phone: {{patient.phone}}</p>
+                    <a href="#">Edit</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2>Patient Profile</h2>
+            <h3>Medical History</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</p>
+            <h3>Appointments</h3>
+            <ul>
+                <li>Appointment 1 - Date: mm/dd/yyyy, Time: hh:mm</li>
+                <li>Appointment 2 - Date: mm/dd/yyyy, Time: hh:mm</li>
+                <!-- Add more appointments here -->
+            </ul>
+            <h3>Prescriptions</h3>
+            <ul>
+                <li>Medication 1 - Dosage: 10mg, Frequency: Twice a day</li>
+                <li>Medication 2 - Dosage: 20mg, Frequency: Once a day</li>
+                <!-- Add more prescriptions here -->
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
+{% block script %}
+    {% if msg %}
+        alert("{{msg}}")    
+    {% endif %}
+{% endblock script %}

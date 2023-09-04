@@ -1,0 +1,74 @@
+{% extends 'hms/main.html' %}
+{% load static %}
+{% block title %} Dashboard Patient {% endblock title %}
+
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{% static 'hms/img/patient-avatar.png' %}" class="card-img-top" alt="Patient Avatar">
+                <div class="card-body">
+                    <table>
+                        <tr >
+                            <td>Patient ID :</td>
+                            <th class='h5'> {{patient.user}}</th>
+                        </tr>
+                        <tr >
+                            <td>Patient Name :</td>
+                            <th> {{patient.name}}</th>
+                            <tr >
+                        </tr>
+                            <th>Age :</th>
+                            <td> {{patient.age|default:"0"}}</td>
+                        </tr>
+                        </tr>
+                            <th>Gender :</th>
+                            <td> {{patient.gender}}</td>
+                        </tr>
+                        </tr>
+                            <th>Email :</th>
+                            <td> {{patient.email|default:""}}</td>
+                        </tr>
+                        </tr>
+                            <th>Phone :</th>
+                            <td> {{patient.phone}}</td>
+                        </tr>
+                        <tr>
+                            <td><a href="#">Edit</a></td>
+                            <td>
+                                <a href="{% url 'logout' %}">Logout</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2>Patient Profile</h2>
+            <h4>Medical History</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</p>
+            
+            <h4>Appointments</h4>
+            <ul>
+                <li>Appointment 1 - Date: {{patient.date_time | date:"d/m/Y"}}, Time: {{patient.date_time | date:"h:m A"}}</li>
+                <li>Appointment 2 - Date: mm/dd/yyyy, Time: hh:mm</li>
+                <!-- Add more appointments here -->
+            </ul>
+            <h4>Prescriptions</h4>
+            <ul>
+                <li>Medication 1 - Dosage: 10mg, Frequency: Twice a day</li>
+                <li>Medication 2 - Dosage: 20mg, Frequency: Once a day</li>
+                <!-- Add more prescriptions here -->
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
+{% block script %}
+    {% if msg %}
+        alert("{{msg}}")    
+    {% endif %}
+{% endblock script %}

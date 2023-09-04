@@ -1,0 +1,14 @@
+{% extends 'hms/main.html' %}
+{% load static %}
+{% block title %} Dashboard Doctor {% endblock title %}
+
+
+{% block body %}
+<h1>Dashboard</h1>
+{% endblock body %}
+
+{% block script %}
+    {% if msg %}
+        alert("{{msg}}")    
+    {% endif %}
+{% endblock script %}
