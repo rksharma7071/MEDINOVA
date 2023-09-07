@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth import authenticate, login, logout
 from datetime import datetime
@@ -70,7 +70,11 @@ def view_login(request):
             login(request, user)
             return redirect('change_password')
         else:
-            msg = 'Invalid username and password. Please try again.'
+            msg = {
+                'icon' : 'error',
+                'title' : 'Oops!',
+                'text' : 'Invalid username and password. Please try again.'
+            }
             return render(request, 'hms/login.html', locals())
     else:
         return render(request, 'hms/login.html', locals())
@@ -79,6 +83,12 @@ def view_login(request):
 @login_required(login_url='login')
 def view_change_password(request):
     new_user = False
+
+    g = request.user.groups.all()
+    if g[0].name == 'StaffGroup':
+        return redirect('dashboard_staff')
+
+
     try:
         patient = Patient.objects.get(user = request.user)
         new_user = patient
@@ -100,16 +110,24 @@ def view_change_password(request):
             user.save()
             new_user.first_login = True
             new_user.save()
-            msg = 'Password Update Successfully.'
-            g = request.user.groups.all()
+
+            msg = {
+                'icon' : 'success',
+                'title' : 'Congratulation!',
+                'text' : 'Password Update Successfully.'
+            }
+
+            
             if g[0].name == 'DoctorGroup':
                 return redirect('dashboard_doctor')
             elif g[0].name == 'PatientGroup':
                 return redirect('dashboard_patient')
-            elif g[0].name == 'StaffGroup':
-                return redirect('dashboard_staff')
         else:
-            error = 'Password does not match, Please try again.'
+            msg = {
+                'icon' : 'error',
+                'title' : 'Oops!',
+                'text' : 'Password does not match, Please try again.'
+            }
         return render(request, 'hms/change_password.html', locals())
     
     else:
@@ -146,17 +164,17 @@ def view_logout(request):
     return redirect('home')
 
 
-@login_required(login_url='login')
-def view_appointment(request):
+def view_patient_registration(request):
     depart = Department.objects.all()
     doc = Doctor.objects.all()
-    patients = Patient.objects.all().order_by('date_time')
-    
-    if request.method == 'POST':
+    patients = Patient.objects.all().order_by('-created_date')
+    if request.method == "POST":
         form = PatientForm(request.POST)
+        
         if form.is_valid():
             patient = form.save(commit=False)
             patient.save()
+
             id = str(patient.id)
             if len(id) < 6:
                 id = id.zfill(6)
@@ -172,10 +190,105 @@ def view_appointment(request):
 
             patient.user = user
             patient.save()
-            msg = f"Patient Registration No: {username} Password: {password}"
-            print(msg)
-            return render(request, 'hms/appointment.html', locals())
+            form = PatientForm()
+
+            msg = {
+                'icon' : 'success',
+                'title' : 'Congratulation!',
+                'text' : f"Dear member you have successfully registered as Patient Registration No: {username} and Password: {password}"
+            }
+
+        return render(request, 'hms/registration.html', locals())
+
     else:
+        form = PatientForm()
+        return render(request, 'hms/registration.html', locals())
+
+
+def view_patient_update(request, pid):
+    patients = Patient.objects.all()
+    patient = Patient.objects.get(id=pid)
+    user = patient.user
+    if request.method == "POST":
+        form = PatientForm(request.POST, instance=patient)
+        if form.is_valid():
+            patient = form.save(commit=False)
+            patient.user = user
+            patient.save()
+            msg = {
+                'icon' : 'success',
+                'title' : 'Congratulation!',
+                'text' : 'Patient Update Successfully.'
+            }
+            return render(request, 'hms/registration.html', locals())
+        else:
+            msg = {
+                'icon' : 'error',
+                'title' : 'Oops!',
+                'text' : 'Something went wrong. Please try again.'
+            }
+    else:
+        form = PatientForm(instance=patient)
+
+    return render(request, 'hms/patient_update.html', locals())
+
+
+
+def view_patient_delete(request, pid):
+    patient = Patient.objects.get(id=pid)
+    
+    msg = {
+        'icon' : 'success',
+        'title' : 'Congratulation!',
+        'text' : f'Are you sure to delete the patient {patient.user}, {patient.name}'
+    }
+
+    patient.delete()
+    return render(request, 'hms/registration.html', locals())
+
+
+
+@login_required(login_url='login')
+def view_appointment(request):
+    departments = Department.objects.all()
+    doctors = Doctor.objects.all()
+    appointments = Appointment.objects.all() 
+
+    if request.method == 'POST':
+        appointment_form = AppointmentForm(request.POST)
+        user = request.POST.get('user')
+        department_id = request.POST.get('department')
+        doctor_id = request.POST.get('doctor')
+
+        try:
+            user = User.objects.get(username=user)
+        except User.DoesNotExist:
+            msg = {
+                'icon' : 'error',
+                'title' : 'Oops!',
+                'text' : "Patient Registration No. does not exist. Please enter the valid registration no."
+            }
+            return render(request, 'hms/appointment.html', locals())
+
+        
+        patient = Patient.objects.get(user=user)
+
+        if appointment_form.is_valid():
+            appointment = appointment_form.save(commit=False)
+            appointment.department = Department.objects.get(id = department_id)
+            appointment.doctor = Doctor.objects.get(id = doctor_id)
+            appointment.patient = patient
+            appointment.save()
+            
+            msg = {
+                'icon' : 'success',
+                'title' : 'Thanks You!',
+                'text' : f"Patient Appointment Book Successfully."
+            }
+            return render(request, 'hms/appointment.html', locals())
+            
+    else:
+        appointment_form = AppointmentForm()
         form = PatientForm()
     return render(request, 'hms/appointment.html', locals())
 

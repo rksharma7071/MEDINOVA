@@ -35,7 +35,7 @@ class Department(models.Model):
     
     def __str__(self):
         return self.name
-    
+
 
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -47,14 +47,36 @@ class Patient(models.Model):
     address = models.CharField(max_length=255, null=True, blank=True)
     photo = models.ImageField(upload_to='media/patient', null=True, blank=True)
     note = models.CharField(max_length=255, null=True, blank=True)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True)
-    date_time = models.DateTimeField(null=True, blank=True)
+    # appointment = models.ForeignKey(Appointment, null=True, blank=True, on_delete=models.CASCADE)
     first_login = models.BooleanField(null=True, blank=True, default=False)
     created_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.user}"
     
 
+class Medical_History(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.patient
+    
+
+class Appointment(models.Model):
+    patient = models.ForeignKey(Patient, null=True, blank=True, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True)
+    datetime = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.patient}"
+
+
+class Prescriptions(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.patient}"

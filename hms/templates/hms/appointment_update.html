@@ -1,6 +1,6 @@
 {% extends 'hms/main.html' %}
 {% load static %}
-{% block title %} Appointment {% endblock title %}
+{% block title %} Registration {% endblock title %}
 
 
 {% block body %}
@@ -23,15 +23,15 @@
         </div>
     </div>
       
-    <!-- Search Model End -->
+      <!-- Search Model End -->
     
 
     <!-- Appointment Start -->
     <div class="container-fluid py-5">
         <div class="container">
             <div class="row gx-5">
-                <div class="col-lg-12 mb-4">
-                    <div class="bg-light text-center rounded p-4">
+                <div class="col-lg">
+                    <div class="bg-light text-center rounded p-5">
                         <h1 class="mb-4">Patient Appointment</h1>                     
                         <form method='POST'>
                             {% csrf_token %}
@@ -61,50 +61,44 @@
                                         {{appointment_form.datetime}}
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row g-3 py-3">
                                 <div class="col-12">
                                     <button class="btn btn-primary w-100 py-3" type="submit">Make An Registration</button>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-12">
-                    <div class="bg-light rounded py-2 px-4">
-                        <div class="m-2 text-center">
-                            <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5 ">Appointment List</h5>
-                        </div>
-                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal"  >Search</button>
-                        <table class='table table-bordered my-3 text-center'>
-                            <tr class=''>
-                                <th>S. No.</th>
-                                <th>Registration No</th>
-                                <th>Name</th>
-                                <th>Doctor</th>
-                                <th>Phone</th>
-                                <th>Appointment Date Time</th>
-                                <th>Action</th>
-                            </tr>
-                            {% for appointment in appointments %}
-                            <tr>
-                                <td>{{forloop.counter}}</td>
-                                <td>{{appointment.patient.user}}</td>
-                                <td>{{appointment.patient.name}}</td>
-                                <td>{{appointment.doctor}}</td>
-                                <td>{{appointment.patient.phone}}</td>
-                                <td>{{appointment.datetime|date:"d/m/Y  h:m A"}}</td>
-                                {% comment %} <td>{{patient.date_time | date:"d/m/Y"}}, {{patient.date_time | date:"h:m A"}}</td> {% endcomment %}
-                                <td>
-                                    <a href="" class='px-1'>Edit</a>
-                                    <a href="" class='px-1'>Delete</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </table>
+                <div class="col-lg-12 m-5 m-lg-0">
+                    <div class="m-4 text-center">
+                        <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5 ">Appointment List</h5>
                     </div>
-                    
+                    <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal"  >Search</button>
+                    <table class='table  my-3 shadow rounded-3'>
+                        <tr>
+                            <th>S. No.</th>
+                            <th>Registration No</th>
+                            <th>Name</th>
+                            <th>Doctor</th>
+                            <th>Phone</th>
+                            <th>Appointment Date Time</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for appointment in appointments %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{appointment.patient.user}}</td>
+                            <td>{{appointment.patient.name}}</td>
+                            <td>{{appointment.doctor}}</td>
+                            <td>{{appointment.patient.phone}}</td>
+                            <td>{{appointment.datetime|date:"d/m/Y  h:m A"}}</td>
+                            {% comment %} <td>{{patient.date_time | date:"d/m/Y"}}, {{patient.date_time | date:"h:m A"}}</td> {% endcomment %}
+                            <td>
+                                <a href="" class='px-1'>Edit</a>
+                                <a href="" class='px-1'>Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
                 </div>
             </div>
         </div>

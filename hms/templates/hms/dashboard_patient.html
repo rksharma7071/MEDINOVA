@@ -1,13 +1,19 @@
 {% extends 'hms/main.html' %}
 {% load static %}
 {% block title %} Dashboard Patient {% endblock title %}
+{% block style %}
+.card{
+    background-color:white; 
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+{% endblock style %}   
 
 
 {% block body %}
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
+    <div class="row bg-light p-3 rounded-3">
+        <div class="col-md-4 ">
+            <div class="card ">
                 <img src="{% static 'hms/img/patient-avatar.png' %}" class="card-img-top" alt="Patient Avatar">
                 <div class="card-body">
                     <table>
@@ -51,11 +57,20 @@
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus.</p>
             
             <h4>Appointments</h4>
-            <ul>
-                <li>Appointment 1 - Date: {{patient.date_time | date:"d/m/Y"}}, Time: {{patient.date_time | date:"h:m A"}}</li>
-                <li>Appointment 2 - Date: mm/dd/yyyy, Time: hh:mm</li>
-                <!-- Add more appointments here -->
-            </ul>
+            <table class='table table-bordered text-center'>
+                <tr>
+                    <th>Department</th>
+                    <th>Doctor</th>
+                    <th>Date Time</th>
+                </tr>
+                {% for appointment in patient.appointment_set.all %}
+                <tr>
+                    <td>{{appointment.department}}</td>
+                    <td>{{appointment.doctor}}</td>
+                    <td>{{appointment.datetime}}</td>
+                </tr>
+                {% endfor %}
+            </table>
             <h4>Prescriptions</h4>
             <ul>
                 <li>Medication 1 - Dosage: 10mg, Frequency: Twice a day</li>
@@ -66,9 +81,3 @@
     </div>
 </div>
 {% endblock body %}
-
-{% block script %}
-    {% if msg %}
-        alert("{{msg}}")    
-    {% endif %}
-{% endblock script %}
